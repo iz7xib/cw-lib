@@ -27,10 +27,14 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
           git fetch --tags
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          if [ "$VERSION" != "$LATEST_TAG" ]; then
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)  # Reindirizza l'errore a null
+          
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No tags found. Publishing version $VERSION..."
+            npm publish --access public
+          elif [ "$VERSION" != "$LATEST_TAG" ]; then
             echo "Publishing version $VERSION..."
-            npm publish --access public  # Assicurati di specificare l'accesso se necessario
+            npm publish --access public
           else
             echo "Version $VERSION is already published. Skipping publish."
           fi
