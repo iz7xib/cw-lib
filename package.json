@@ -1,6 +1,6 @@
 {
   "name": "learn-morse-code",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.0.1",
   "description": "A TypeScript library for generating Morse code from text",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
