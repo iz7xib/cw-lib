@@ -15,12 +15,22 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Use the desired Node.js version
+          node-version: '16'  # Specifica la versione di Node.js
+          registry-url: 'https://registry.npmjs.org/'  # Assicurati di utilizzare il giusto URL
 
       - name: Install dependencies
         run: npm install
 
       - name: Publish to npm
-        run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # Usa il secret che hai creato
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          if [ "$VERSION" != "$LATEST_TAG" ]; then
+            echo "Publishing version $VERSION..."
+            npm publish --access public  # Assicurati di specificare l'accesso se necessario
+          else
+            echo "Version $VERSION is already published. Skipping publish."
+          fi
